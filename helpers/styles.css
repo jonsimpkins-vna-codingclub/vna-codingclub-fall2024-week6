@@ -1,0 +1,76 @@
+/** Style for the page body
+  * (the wrapper around all the other stuff)
+*/
+body {
+    margin: 0;
+}
+
+/** Style for the page header */
+h1 {
+    text-align: center;
+    background-color: darkblue;
+    color: white;
+    padding: 16px;
+}
+
+#main-app {
+    display: flex;
+}
+
+canvas {
+    display: block;
+    border: 1px solid lightgrey;
+}
+
+.left-controls {
+    flex: 1;
+}
+
+.right-controls {
+    flex: 0;
+    padding: 0 30px;
+}
+
+#challenge-selector {
+    margin: auto;
+    display: block;
+    margin-bottom: 16px;
+    font-size: 24px;
+    padding: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+#desc {
+    margin: auto;
+    display: block;
+    width: 300px;
+    padding: 8px;
+}
+
+.code-header {
+    font-weight: bold;
+    width: 300px;
+    margin: auto;
+}
+
+pre {
+    padding: 30px;
+    background: lightgrey;
+}
+
+.control-header {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+#start-btn {
+    font-size: 24px;
+    padding: 8px;
+}
+
+#current-status {
+    font-size: 24px;
+    margin: 10px;
+    display: inline-block;
+}

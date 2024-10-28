@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>VNA Coding Club, Week 5</title>
+
+    <link href="helpers/styles.css" rel="stylesheet" />
+
+    <script src="animation_speed.js"></script>
+    <script src="helpers/base_challenge.js"></script>
+    <script src="helpers/cell_options.js"></script>
+    <script src="helpers/allowed_actions.js"></script>
+
+    <script src="step_0.js"></script>
+    <script src="step_1.js"></script>
+    <script src="step_2.js"></script>
+    <script src="step_3.js"></script>
+    <script src="step_4.js"></script>
+</head>
+<body>
+    <h1>VNA Coding Club, Week 5</h1>
+    <div id="main-app">
+        <!-- Stuff in here will be populated by your code -->
+
+        
+        <div class="left-controls">
+            <select id="challenge-selector"></select>
+            <div id="desc"></div>
+
+            <div class="code-header">
+                Current code: <span id="code-stats"></span>
+            </div>
+
+            <pre id="code-view"></pre>
+        
+        </div>
+        <div class="right-controls">
+            <div class="control-header">
+                <button id="start-btn">Start</button>
+                <span id="current-status"></span>
+            </div>
+            <canvas id="my-canvas" width="450" height="450"></canvas>
+        </div>
+        
+    </div>
+
+    <!-- This script runs at the end, intentionally -->
+    <script src="helpers/challenges.js"></script>
+    <script src="helpers/helpers.js"></script>
+</body>
+</html>
