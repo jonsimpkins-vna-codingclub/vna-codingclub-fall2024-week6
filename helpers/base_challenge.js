@@ -6,6 +6,8 @@ class Challenge {
 
     desc = 'An example of what to put for the description';
 
+    targetCandyCount = 0;
+
     // Method to call when initializing board
     initBoard = () => {};
 

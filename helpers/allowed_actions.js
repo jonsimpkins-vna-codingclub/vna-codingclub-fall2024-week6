@@ -32,106 +32,20 @@ function setUpdatedState() {
     document.getElementById('current-status').innerText = displayText;
 }
 
-function _updateState() {
-    let currentSquare = currentBoard[robotLoc[0]][robotLoc[1]];
-
-    if (currentSquare == WATER) {
-        currentState = STATE_DROWNED;
-        return;
-    }
-
-    if (currentSquare == BOAT) {
-        currentState = STATE_SUCCESS;
-        return;
-    }
-
-    // Check to make sure we didn't squish a worker
-    for (let i = 0; i < peopleLoc.length; i++) {
-        if (peopleLoc[i][0] == robotLoc[0] && peopleLoc[i][1] == robotLoc[1]) {
-            currentState = STATE_COLLISION;
-            return;
-        }
-    }
+function prevHouse() {
+    // Move to previous house
 }
 
-function moveLeft() {
-    if (currentState != STATE_RUNNING) {
-        return;
-    }
-
-    if (robotLoc[0] > 0 && currentBoard[robotLoc[0] - 1][robotLoc[1]] != WALL) {
-        robotLoc[0] -= 1;
-        _pushRobotLoc();
-        _updateState();
-    }
+function nextHouse() {
+    // Move to next house
 }
 
-function moveRight() {
-    if (currentState != STATE_RUNNING) {
-        return;
-    }
-
-    if (robotLoc[0] < 14 && currentBoard[robotLoc[0] + 1][robotLoc[1]] != WALL) {
-        robotLoc[0] += 1;
-        _pushRobotLoc();
-        _updateState();
-    }
+function crossStreet() {
+    // Swap to other side of street
 }
 
-function moveUp() {
-    if (currentState != STATE_RUNNING) {
-        return;
-    }
-
-    if (robotLoc[1] > 0 && currentBoard[robotLoc[0]][robotLoc[1] - 1] != WALL) {
-        robotLoc[1] -= 1;
-        _pushRobotLoc();
-        _updateState();
-    }
+function knockAtDoor() {
+    // Knock for candy
 }
 
-function moveDown() {
-    if (currentState != STATE_RUNNING) {
-        return;
-    }
 
-    if (robotLoc[1] < 14 && currentBoard[robotLoc[0]][robotLoc[1] + 1] != WALL) {
-        robotLoc[1] += 1;
-        _pushRobotLoc();
-        _updateState();
-    }
-}
-
-function _checkIfSafe(col, row) {
-    if (col < 0 || col >= 15 || row < 0 || row >= 15) {
-        return false;
-    }
-
-    if (currentBoard[col][row] == WATER || currentBoard[col][row] == WALL) {
-        return false;
-    }
-
-    for (let i = 0; i < peopleLoc.length; i++) {
-        if (peopleLoc[i][0] == col && peopleLoc[i][1] == row) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function isUpSafe() {
-    return _checkIfSafe(robotLoc[0], robotLoc[1] - 1); 
-}
-
-function isDownSafe() {
-    return _checkIfSafe(robotLoc[0], robotLoc[1] + 1);
-}
-
-function isLeftSafe() {
-    return _checkIfSafe(robotLoc[0] - 1, robotLoc[1]);
-}
-
-function isRightSafe() {
-    return _checkIfSafe(robotLoc[0] + 1, robotLoc[1]);
-}

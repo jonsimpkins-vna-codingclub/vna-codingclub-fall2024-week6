@@ -15,18 +15,17 @@ let gridSqSize = 30;
 let gridSize = Math.floor(canvasSize / gridSqSize);
 
 function generateBlankBoard() {
-    let board = new Array(gridSize).fill(WATER);
+    let board = new Array(gridSize).fill(TREE);
     for (let i = 0; i < gridSize; i++) {
-        board[i] = new Array(gridSize).fill(WATER);
+        board[i] = new Array(gridSize).fill(TREE);
     }
     return board;
 }
 
 let currentBoard = generateBlankBoard();
 let robotLoc = [0, 0];
-let peopleLoc = [];
-
-
+let leftHouseMap = [];
+let rightHouseMap = [];
 
 function drawGridLines() {
     ctx.lineWidth = 0.25;
@@ -52,12 +51,16 @@ function drawGridLines() {
 // Maps from string values in `cell_options.js`
 // to the render color
 function getColor(cellValue) {
-    if (cellValue == WATER || cellValue == BOAT) {
-        return 'rgb(0,0,255)';
+    if (cellValue == TREE) {
+        return 'rgb(0,128,0)';
     }
 
-    if (cellValue == WALL || cellValue == DOCK) {
-        return 'rgb(124, 252, 0)';
+    if (cellValue == STREET) {
+        return 'rgb(128, 128, 128)';
+    }
+
+    if (cellValue == PIT) {
+        return 'rgb(0,0,0)';
     }
 
     return '';
@@ -73,38 +76,18 @@ function drawRobot() {
     ctx.drawImage(robotImg, robotLoc[0] * gridSqSize, robotLoc[1] * gridSqSize, gridSqSize, gridSqSize);
 }
 
-const workerImg = new Image();
-workerImg.src = 'images/construction_worker.svg';
-workerImg.onload = () => {
-    redraw();
-}
 
-const brickImg = new Image();
-brickImg.src = 'images/brick.svg';
-brickImg.onload = () => {
-    redraw();
-}
-
-const boatImg = new Image();
-boatImg.src = 'images/boat.svg';
-boatImg.onload = () => {
-    redraw();
-}
 
 function getImg(cellValue) {
-    if (cellValue == WALL) {
+    /*if (cellValue == WALL) {
         return brickImg;
     }
 
     if (cellValue == BOAT) {
         return boatImg;
-    }
+    }*/
 
     return null;
-}
-
-function drawConstructionWorker(col, row) {
-    ctx.drawImage(workerImg, col * gridSqSize, row * gridSqSize, gridSqSize, gridSqSize);
 }
 
 function drawBoard() {
@@ -125,13 +108,9 @@ function drawBoard() {
         }
     }
 
-    // Draw the people
-    for (let i = 0; i < peopleLoc.length; i++) {
-        drawConstructionWorker(peopleLoc[i][0], peopleLoc[i][1]);
-    }
+    // TODO: Draw the houses
 
     drawRobot();
-
 }
 
 
@@ -150,7 +129,8 @@ function redraw() {
 function resetChallenge() {
     currentBoard = generateBlankBoard();
     robotLoc = [0, 0];
-    peopleLoc = [];
+    leftHouseMap = [];
+    rightHouseMap = [];
 
     currentChallenge.initBoard();
 }
