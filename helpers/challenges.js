@@ -1,87 +1,131 @@
 let step0Challenge = new Challenge();
 step0Challenge.title = 'Step 0';
-step0Challenge.desc = 'step 0 stuff';
+step0Challenge.desc = '2nd house is haunted, but the other 3 have candy.';
 step0Challenge.startSimulation = step0;
 step0Challenge.initBoard = () => {
-    /*for (let i = 5; i < 10; i++) {
-        for (let j = 5; j < 10; j++) {
-            currentBoard[i][j] = DOCK;
-        }
-    }
-
-    currentBoard[7][10] = BOAT;
-
-    robotLoc = [7, 5];*/
+    leftHouseMap = [CANDY, GHOST, CANDY, CANDY];
+    rightHouseMap = [];
 }
 
 let step1Challenge = new Challenge();
 step1Challenge.title = 'Step 1';
-step1Challenge.desc = 'step 1 stuff';
+step1Challenge.desc = 'Still 4 houses, but now a random one is haunted.';
 step1Challenge.startSimulation = step1;
 step1Challenge.initBoard = () => {
-    /*for (let i = 5; i < 10; i++) {
-        for (let j = 5; j < 10; j++) {
-            currentBoard[i][j] = DOCK;
-        }
-    }
+    leftHouseMap = [CANDY, CANDY, CANDY, CANDY];
 
-    currentBoard[9][10] = BOAT;
+    leftHouseMap[Math.floor(Math.random() * 4)] = GHOST;
 
-    robotLoc = [5, 5];*/
+    rightHouseMap = [];
 }
 
 let step2Challenge = new Challenge();
 step2Challenge.title = 'Step 2';
-step2Challenge.desc = 'step 2 stuff';
+step2Challenge.desc = 'Between 2 and 4 houses, unknown amount of haunting.';
 step2Challenge.startSimulation = step2;
 step2Challenge.initBoard = () => {
-    /*for (let i = 5; i < 10; i++) {
-        for (let j = 5; j < 10; j++) {
-            currentBoard[i][j] = DOCK;
+    let houseLength = Math.floor(Math.random() * 3) + 2;
+
+    let anyCandy = false;
+    leftHouseMap = [];
+    for (let i = 0; i < houseLength; i++) {
+        
+        let value = GHOST;
+        if (Math.random() > 0.5) {
+            value = CANDY;
+            anyCandy = true;
         }
+        
+        leftHouseMap.push(value);
     }
 
-    currentBoard[9][10] = BOAT;
-
-    robotLoc = [5, 5];
-
-    currentBoard[7][5] = WALL;
-    currentBoard[8][6] = WALL;
-    currentBoard[9][7] = WALL;
-
-    
-    currentBoard[5][6] = WALL;
-    currentBoard[6][7] = WALL;
-    currentBoard[7][8] = WALL;
-    currentBoard[8][9] = WALL;*/
+    if (!anyCandy) {
+        leftHouseMap[0] = CANDY;
+    }
 }
 
 let step3Challenge = new Challenge();
 step3Challenge.title = 'Step 3';
-step3Challenge.desc = 'step 3 stuff';
+step3Challenge.desc = 'Between 2 and 4 houses on each side of the street';
 step3Challenge.startSimulation = step3;
 step3Challenge.initBoard = () => {
+    let houseLength = Math.floor(Math.random() * 3) + 2;
 
-    /*let maxWidth = Math.floor(Math.random() * 7) + 2;
-    let maxHeight = Math.floor(Math.random() * 7) + 2;
-
-    for (let i = 5; i < maxWidth + 5; i++) {
-        for (let j = 5; j < maxHeight + 5; j++) {
-            currentBoard[i][j] = DOCK;
+    let anyCandy = false;
+    leftHouseMap = [];
+    for (let i = 0; i < houseLength; i++) {
+        
+        let value = GHOST;
+        if (Math.random() > 0.5) {
+            value = CANDY;
+            anyCandy = true;
         }
+        
+        leftHouseMap.push(value);
     }
 
-    currentBoard[4 + maxWidth][4 + maxHeight] = BOAT;
+    houseLength = Math.floor(Math.random() * 3) + 2;
+    rightHouseMap = [];
+    for (let i = 0; i < houseLength; i++) {
+        
+        let value = GHOST;
+        if (Math.random() > 0.5) {
+            value = CANDY;
+            anyCandy = true;
+        }
+        
+        rightHouseMap.push(value);
+    }
 
-    robotLoc = [5, 5];*/
+    if (!anyCandy) {
+        leftHouseMap[0] = CANDY;
+    }
 }
 
 let step4Challenge = new Challenge();
 step4Challenge.title = 'Step 4';
-step4Challenge.desc = 'step 4 stuff';
+step4Challenge.desc = 'Between 2 and 4 houses on each side, but now there is also a trap pit in front of one of the houses!';
 step4Challenge.startSimulation = step4;
 step4Challenge.initBoard = () => {
+    let houseLength = Math.floor(Math.random() * 3) + 2;
 
+    let anyCandy = false;
+    leftHouseMap = [];
+    for (let i = 0; i < houseLength; i++) {
+        
+        let value = GHOST;
+        if (Math.random() > 0.5) {
+            value = CANDY;
+            anyCandy = true;
+        }
+        
+        leftHouseMap.push(value);
+    }
+
+    houseLength = Math.floor(Math.random() * 3) + 2;
+    rightHouseMap = [];
+    for (let i = 0; i < houseLength; i++) {
+        
+        let value = GHOST;
+        if (Math.random() > 0.5) {
+            value = CANDY;
+            anyCandy = true;
+        }
+        
+        rightHouseMap.push(value);
+    }
+
+    if (!anyCandy) {
+        leftHouseMap[0] = CANDY;
+    }
+
+    if (Math.random() > 0.5) {
+        // Left pit
+        leftHouseMap[1 + Math.floor(Math.random() * (leftHouseMap.length - 1))] = PIT;
+    } else {
+        // Right pit
+        rightHouseMap[Math.floor(Math.random() * (rightHouseMap.length))] = PIT;
+    }
 }
 
 

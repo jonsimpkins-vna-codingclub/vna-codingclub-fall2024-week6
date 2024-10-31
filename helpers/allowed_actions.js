@@ -1,51 +1,117 @@
 // All the allowed actions the robot can take
 
-// currentBoard is a 15x15 grid with the type of cell in string
-
-// robotLoc is a 2x1 array with the row / col of the robot
-// peopleLoc is an Nx2 array of the locations of all workers
-
-// robotLocQueue is the queue of all the robot locations (for animation)
-// currentState is an enum saying if we hit a terminal state or not
-
 function _pushRobotLoc() {
     robotLocQueue.push([robotLoc[0], robotLoc[1]]);
 }
 
-// Show the final state (e.g. "Success!" or "Drowned :(")
+// Show the final state (e.g. "Success!" or "Ghosted :(")
 function setUpdatedState() {
 
-    let displayText = 'Incomplete!';
+    let displayText = '' + numCandy + ' candy collected!';
 
     switch (currentState) {
-        case STATE_COLLISION:
-            displayText = 'Fail: Hit a worker!';
+        case STATE_GHOSTED:
+            displayText = 'Ghosted :(';
             break;
-        case STATE_DROWNED:
-            displayText = 'Fail: Drowned!';
+        case STATE_LOST:
+            displayText = 'Lost in the woods!';
             break;
-        case STATE_SUCCESS:
-            displayText = 'Success!';
+        case STATE_PIT:
+            displayText = 'Fell in a pit!';
             break;
     }
 
     document.getElementById('current-status').innerText = displayText;
 }
 
+function _updateState() {
+    let currentSquare = currentBoard[robotLoc[0]][robotLoc[1]];
+
+    if (currentSquare == PIT) {
+        currentState = STATE_PIT;
+        return;
+    }
+
+    if (currentSquare == TREE) {
+        currentState = STATE_LOST;
+        return;
+    }
+}
+
+
+function _move(change) {
+    if (currentState != STATE_RUNNING) {
+        return;
+    }
+
+    robotLoc[0] += change[0];
+    robotLoc[1] += change[1];
+    _pushRobotLoc();
+    _updateState();
+}
+
+
 function prevHouse() {
-    // Move to previous house
+    _move([0, -1]);
+    _move([0, -1]);
+    _move([0, -1]);
+    currentHouseIdx--;
 }
 
 function nextHouse() {
-    // Move to next house
+    _move([0, 1]);
+    _move([0, 1]);
+    _move([0, 1]);
+    currentHouseIdx++;
 }
 
 function crossStreet() {
-    // Swap to other side of street
+    if (currentState != STATE_RUNNING) {
+        return;
+    }
+    if (isLeftSide) {
+        _move([1,0]);
+        _move([1,0]);
+        _move([1,0]);
+        _move([1,0]);
+    } else {
+        _move([-1,0]);
+        _move([-1,0]);
+        _move([-1,0]);
+        _move([-1,0]);
+    }   
+    
+    isLeftSide = !isLeftSide;
 }
 
 function knockAtDoor() {
     // Knock for candy
+    if (currentState != STATE_RUNNING) {
+        return;
+    }
+
+    if (isLeftSide) {
+        _move([-1, 0]);
+        // Check to see if house is candy or not
+        if (currentHouseIdx >= 0 && currentHouseIdx < leftHouseMap.length) {
+            if (leftHouseMap[currentHouseIdx] == CANDY) {
+                numCandy++;
+                _move([1, 0]);
+            } else {
+                currentState = STATE_GHOSTED;
+            }
+        } 
+    } else {
+        _move([1,0]);
+        if (currentHouseIdx >= 0 && currentHouseIdx < rightHouseMap.length) {
+            if (rightHouseMap[currentHouseIdx] == CANDY) {
+                numCandy++;
+                _move([-1, 0]);
+            } else {
+                currentState = STATE_GHOSTED;
+            }
+        } 
+    }
 }
 
 

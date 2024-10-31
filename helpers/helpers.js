@@ -26,6 +26,9 @@ let currentBoard = generateBlankBoard();
 let robotLoc = [0, 0];
 let leftHouseMap = [];
 let rightHouseMap = [];
+let isLeftSide = true;
+let currentHouseIdx = 0;
+let numCandy = 0;
 
 function drawGridLines() {
     ctx.lineWidth = 0.25;
@@ -51,16 +54,12 @@ function drawGridLines() {
 // Maps from string values in `cell_options.js`
 // to the render color
 function getColor(cellValue) {
-    if (cellValue == TREE) {
+    if (cellValue == TREE || cellValue == HOUSE) {
         return 'rgb(0,128,0)';
     }
 
-    if (cellValue == STREET) {
+    if (cellValue == STREET || cellValue == PIT) {
         return 'rgb(128, 128, 128)';
-    }
-
-    if (cellValue == PIT) {
-        return 'rgb(0,0,0)';
     }
 
     return '';
@@ -76,18 +75,40 @@ function drawRobot() {
     ctx.drawImage(robotImg, robotLoc[0] * gridSqSize, robotLoc[1] * gridSqSize, gridSqSize, gridSqSize);
 }
 
+const treeImg = new Image();
+treeImg.src = "images/tree.svg";
+treeImg.onload = () => {
+    redraw();
+}
 
+const candyImg = new Image();
+candyImg.src = "images/candy.svg";
+candyImg.onload = () => {
+    redraw();
+}
 
-function getImg(cellValue) {
-    /*if (cellValue == WALL) {
-        return brickImg;
-    }
+const ghostImg = new Image();
+ghostImg.src = "images/ghost.svg";
+ghostImg.onload = () => {
+    redraw();
+}
 
-    if (cellValue == BOAT) {
-        return boatImg;
-    }*/
+const houseImg = new Image();
+houseImg.src = "images/normal_house.svg";
+houseImg.onload = () => {
+    redraw();
+}
 
-    return null;
+const ghostHouseImg = new Image();
+ghostHouseImg.src = "images/ghost_house.svg";
+ghostHouseImg.onload = () => {
+    redraw();
+}
+
+const pitImg = new Image();
+pitImg.src = "images/pit.svg";
+pitImg.onload = () => {
+    redraw();
 }
 
 function drawBoard() {
@@ -100,15 +121,48 @@ function drawBoard() {
                 ctx.fillRect(i * gridSqSize, j * gridSqSize, gridSqSize, gridSqSize);
             }
 
-            let img = getImg(currentBoard[i][j]);
-            if (!!img) {
-                ctx.drawImage(img, i * gridSqSize, j * gridSqSize, gridSqSize, gridSqSize);
+            if (currentBoard[i][j] == TREE) {
+                ctx.drawImage(treeImg, i * gridSqSize, j * gridSqSize, gridSqSize, gridSqSize);
             }
 
         }
     }
 
-    // TODO: Draw the houses
+    for (let i = 0; i < leftHouseMap.length; i++) {
+        let startX = 4 * gridSqSize;
+        let startY = (2 + 3*i) * gridSqSize;
+        if (leftHouseMap[i] == CANDY) {
+            ctx.drawImage(candyImg, startX, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(houseImg, startX - (2*gridSqSize), startY - gridSqSize, 2*gridSqSize, 2*gridSqSize);
+        }
+        if (leftHouseMap[i] == GHOST) {
+            ctx.drawImage(ghostImg, startX, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(ghostHouseImg, startX - (2*gridSqSize), startY - gridSqSize, 2*gridSqSize, 2*gridSqSize);
+        }
+        if (leftHouseMap[i] == PIT) {
+            ctx.drawImage(pitImg, startX + gridSqSize, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(candyImg, startX, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(houseImg, startX - (2*gridSqSize), startY - gridSqSize, 2*gridSqSize, 2*gridSqSize);
+        }
+    }
+
+    for (let i = 0; i < rightHouseMap.length; i++) {
+        let startX = 10 * gridSqSize;
+        let startY = (2 + 3*i) * gridSqSize;
+        if (rightHouseMap[i] == CANDY) {
+            ctx.drawImage(candyImg, startX, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(houseImg, startX + gridSqSize, startY - gridSqSize, 2*gridSqSize, 2*gridSqSize);
+        }
+        if (rightHouseMap[i] == GHOST) {
+            ctx.drawImage(ghostImg, startX, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(ghostHouseImg, startX + gridSqSize, startY - gridSqSize, 2*gridSqSize, 2*gridSqSize);
+        }
+        if (rightHouseMap[i] == PIT) {
+            ctx.drawImage(pitImg, startX - gridSqSize, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(candyImg, startX, startY, gridSqSize, gridSqSize);
+            ctx.drawImage(houseImg, startX + gridSqSize, startY - gridSqSize, 2*gridSqSize, 2*gridSqSize);
+        }
+    }
 
     drawRobot();
 }
@@ -121,6 +175,8 @@ function redraw() {
     drawBoard();
 
     drawGridLines();
+
+    // TODO: update to draw count of candy
 }
 
 
@@ -131,8 +187,47 @@ function resetChallenge() {
     robotLoc = [0, 0];
     leftHouseMap = [];
     rightHouseMap = [];
+    isLeftSide = true;
+    currentHouseIdx = 0;
+    numCandy = 0;
 
     currentChallenge.initBoard();
+
+    let streetLength = 1 + 3*Math.max(leftHouseMap.length, rightHouseMap.length);
+
+    for (let i = 5; i < 10; i++) {
+        for (let j = 1; j < streetLength; j++) {
+            currentBoard[i][j] = STREET;
+        }
+    }
+
+    robotLoc = [5, 2];
+    isLeftSide = true;
+
+    // Apply the driveways to the houses
+    for (let i = 0; i < leftHouseMap.length; i++) {
+        if (leftHouseMap[i] == PIT) {
+            currentBoard[5][2 + (3*i)] = PIT;
+        }
+        currentBoard[4][2 + (3*i)] = STREET;
+
+        currentBoard[2][1 + (3*i)] = HOUSE;
+        currentBoard[3][1 + (3*i)] = HOUSE;
+        currentBoard[2][2 + (3*i)] = HOUSE;
+        currentBoard[3][2 + (3*i)] = HOUSE;
+    }
+
+    for (let i = 0; i < rightHouseMap.length; i++) {
+        if (rightHouseMap[i] == PIT) {
+            currentBoard[9][2 + (3*i)] = PIT;
+        }
+        currentBoard[10][2 + (3*i)] = STREET;
+
+        currentBoard[11][1 + (3*i)] = HOUSE;
+        currentBoard[12][1 + (3*i)] = HOUSE;
+        currentBoard[11][2 + (3*i)] = HOUSE;
+        currentBoard[12][2 + (3*i)] = HOUSE;
+    }
 }
 
 function countLinesOfCode(allCode) {
@@ -151,17 +246,26 @@ function countLinesOfCode(allCode) {
 function initNewChallenge(challengeName) {
     // Save the name of the challenge, so refreshes of the page
     // load the same thing next time.
-    localStorage.setItem('challengeName', challengeName);
+    localStorage.setItem('wk6challengeName', challengeName);
 
     currentChallenge = challengeMap[challengeName];
 
     document.getElementById('challenge-selector').value = challengeName;
     document.getElementById('desc').innerText = currentChallenge.desc;
 
-    document.getElementById('code-view').innerText = currentChallenge.startSimulation.toString().trim();
+    resetChallenge();
+
+    let codeView = '';
+    codeView += 'let leftHouseMap = ' + JSON.stringify(leftHouseMap) + ';\n';
+    if (rightHouseMap.length) {
+        codeView += 'let rightHouseMap = ' + JSON.stringify(rightHouseMap) + ';\n';
+    }
+    codeView += '\n';
+    codeView += currentChallenge.startSimulation.toString().trim();
+
+    document.getElementById('code-view').innerText = codeView;
     document.getElementById('code-stats').innerText = `${countLinesOfCode(currentChallenge.startSimulation.toString())} LOC`; // TODO: actually compute
 
-    resetChallenge();
     redraw();
 }
 
@@ -175,7 +279,7 @@ for (const challenge of Object.keys(challengeMap)) {
     document.getElementById('challenge-selector').appendChild(optionEl);
 }
 
-let initialChallengeName = localStorage.getItem('challengeName') || Object.keys(challengeMap)[0];
+let initialChallengeName = localStorage.getItem('wk6challengeName') || Object.keys(challengeMap)[0];
 
 
 initNewChallenge(initialChallengeName);

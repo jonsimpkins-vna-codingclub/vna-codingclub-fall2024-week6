@@ -1,13 +1,16 @@
 function step3() {
     // This is where you complete Step 3
     
-    // moveUp() will move the robot up 1 square
-    // moveDown() will move the robot down 1 square
-    // moveLeft() will move the robot left 1 square
-    // moveRight() will move the robot right 1 square
+    // nextHouse() will move the robot down 1 house
+    // prevHouse() will move the robot up 1 house
+    // knockAtDoor() will knock at the door
+    // crossStreet() will cross to other side of street
 
-    // isUpSafe() returns true if robot can safely move up 1 square
-    // isDownSafe() returns true if robot can safely move down 1 square
-    // isLeftSafe() returns true if robot can safely move left 1 square
-    // isRightSafe() returns true if robot can safely move left 1 square
+    // leftHouseMap[1] will tell you what the 2nd house on the left is
+    // ('candy' or 'ghost')
+
+    // leftHouseMap.length will tell you how many houses on the left
+
+    // rightHouseMap[1] will tell you what the 2nd house on the right is
+    // ('candy' or 'ghost')
 }

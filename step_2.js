@@ -1,8 +1,12 @@
 function step2() {
     // This is where you complete Step 2
     
-    // moveUp() will move the robot up 1 square
-    // moveDown() will move the robot down 1 square
-    // moveLeft() will move the robot left 1 square
-    // moveRight() will move the robot right 1 square
+    // nextHouse() will move the robot down 1 house
+    // prevHouse() will move the robot up 1 house
+    // knockAtDoor() will knock at the door
+
+    // leftHouseMap[1] will tell you what the 2nd house is
+    // ('candy' or 'ghost')
+
+    // leftHouseMap.length will tell you how many houses
 }
